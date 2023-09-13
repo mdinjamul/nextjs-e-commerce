@@ -1,0 +1,86 @@
+datasource db {
+  provider = "mongodb"
+  url      = env("DB_URI")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// User model
+model User {
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId
+  username  String?   @unique
+  fullName  String
+  email     String    @unique
+  phone     String?   @unique
+  password  String
+  avatar    String?
+  role      String    @default("user")
+  review    Review[]
+  Cart      Cart[]
+  Address   Address[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+// product model
+model Product {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  title         String
+  price         Float
+  description   String
+  category      String
+  seller        String
+  stock         Int
+  images        Json[]
+  reviews       Review[]
+  averageRating Float?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+// Review model
+model Review {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  title     String
+  rating    Float
+  comment   String?
+  product   Product  @relation(fields: [productId], references: [id])
+  productId String   @db.ObjectId
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String   @db.ObjectId
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// cart item storing model
+model Cart {
+  id                String   @id @default(auto()) @map("_id") @db.ObjectId
+  user              User     @relation(fields: [userId], references: [id])
+  userId            String   @db.ObjectId
+  productId         String   @db.ObjectId
+  title             String
+  image             String
+  price             Float
+  stock             Int
+  quantity          Int      @default(1)
+  isQuantityChanged Boolean  @default(false)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}
+
+// address
+model Address {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  street    String
+  city      String
+  state     String
+  phone     String
+  zipCode   String
+  country   String
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String   @db.ObjectId
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
