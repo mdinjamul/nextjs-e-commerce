@@ -5,13 +5,11 @@ import { toast } from "react-toastify";
  ***********************/
 export const fetchProducts = async () => {
   try {
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/products?apiKey=${process.env.NEXT_PUBLIC_API_KEY}`
-    );
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products`);
     const data = await response.json();
     return data;
   } catch (err) {
-    toast.error("Unable to fetch Products", err);
+    throw new Error("Unable to fetch Products", err);
   }
 };
 
@@ -29,24 +27,24 @@ export const fetchFilteredProducts = async (
 ) => {
   try {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/products?apiKey=${
-        process.env.NEXT_PUBLIC_API_KEY
-      }&&keyword=${searQuery || ""}&&page=${page}&&perPage=3&&category=${
-        category || ""
-      }&&sort=${sort || ""}&&rating=${rating || ""}&&minPrice=${
-        minPrice || ""
-      }&&maxPrice=${maxPrice || ""}`
+      `${process.env.NEXT_PUBLIC_API_URL}/products?keyword=${
+        searQuery || ""
+      }&&page=${page}&&perPage=3&&category=${category || ""}&&sort=${
+        sort || ""
+      }&&rating=${rating || ""}&&minPrice=${minPrice || ""}&&maxPrice=${
+        maxPrice || ""
+      }`
     );
     const data = await response.json();
     return data;
   } catch (err) {
-    toast.error("Unable to Fetch Products", err);
+    throw new Error("Unable to fetch Products", err);
   }
 };
 
 export const fetchSingleProduct = async (id) => {
   const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/products/${id}?apiKey=${process.env.NEXT_PUBLIC_API_KEY}`
+    `${process.env.NEXT_PUBLIC_API_URL}/products/${id}`
   );
   const data = await response.json();
   return data;
@@ -59,12 +57,12 @@ export const fetchSingleProduct = async (id) => {
 export const fetchUserById = async (id) => {
   try {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/users?apiKey=${process.env.NEXT_PUBLIC_API_KEY}&&id=${id}`
+      `${process.env.NEXT_PUBLIC_API_URL}/users?id=${id || ""}`
     );
     const userData = await response.json();
     return userData;
   } catch (err) {
-    toast.error("Unable to Fetch User", err);
+    throw new Error("Unable to Fetch User", err);
   }
 };
 
@@ -72,12 +70,12 @@ export const fetchUserById = async (id) => {
 export const fetchUserByEmail = async (email) => {
   try {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/users?apiKey=${process.env.NEXT_PUBLIC_API_KEY}&&email=${email}`
+      `${process.env.NEXT_PUBLIC_API_URL}/users?email=${email}`
     );
     const userData = await response.json();
     return userData;
   } catch (err) {
-    toast.error("Unable to Fetch User", err);
+    throw new Error("Unable to Fetch User", err);
   }
 };
 
@@ -85,12 +83,12 @@ export const fetchUserByEmail = async (email) => {
 export const fetchUserByPhone = async (phone) => {
   try {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/users?apiKey=${process.env.NEXT_PUBLIC_API_KEY}&&phone=${phone}`
+      `${process.env.NEXT_PUBLIC_API_URL}/users?phone=${phone}`
     );
     const userData = await response.json();
     return userData;
   } catch (err) {
-    toast.error("Unable to Fetch User", err);
+    throw new Error("Unable to Fetch User", err);
   }
 };
 
@@ -100,7 +98,7 @@ export const fetchUserByPhone = async (phone) => {
 export const fetchForRegister = async (fullName, email, password) => {
   try {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/auth/register?apiKey=${process.env.NEXT_PUBLIC_API_KEY}`,
+      `${process.env.NEXT_PUBLIC_API_URL}/auth/register`,
       {
         method: "POST",
         headers: {
@@ -111,7 +109,7 @@ export const fetchForRegister = async (fullName, email, password) => {
     );
     return response;
   } catch (err) {
-    toast.error("Unable to Fetch User", err);
+    throw new Error("Unable to Fetch User", err);
   }
 };
 
@@ -128,25 +126,22 @@ export const fetchForAddToCart = async (
   quantity
 ) => {
   try {
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/cart?apiKey=${process.env.NEXT_PUBLIC_API_KEY}`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          userId,
-          productId,
-          title,
-          image,
-          price,
-          stock,
-          quantity,
-        }),
-      }
-    );
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/cart`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        userId,
+        productId,
+        title,
+        image,
+        price,
+        stock,
+        quantity,
+      }),
+    });
     return response;
   } catch (err) {
-    toast.error("Unable to create cart", err);
+    throw new Error("Unable to create cart item", err);
   }
 };
 
@@ -156,7 +151,7 @@ export const fetchForAddToCart = async (
 export const fetchCartItems = async (userId) => {
   try {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/cart?apiKey=${process.env.NEXT_PUBLIC_API_KEY}&&userId=${userId}`
+      `${process.env.NEXT_PUBLIC_API_URL}/cart?userId=${userId}`
     );
 
     if (!response.ok) {
@@ -166,26 +161,26 @@ export const fetchCartItems = async (userId) => {
     const data = await response.json();
     return data;
   } catch (error) {
-    toast.error("unable to get cart items");
+    throw new Error("Unable to get cart items", err);
   }
 };
 
 /**********************
  * UPDATE CART ITEMS
  ***********************/
-export const fetchForUpdateCart = async (id, updatedCartData) => {
+export const fetchForUpdateCart = async (id, quantity) => {
   try {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/cart?apiKey=${process.env.NEXT_PUBLIC_API_KEY}&&id=${id}`,
+      `${process.env.NEXT_PUBLIC_API_URL}/cart?id=${id}`,
       {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ quantity: updatedCartData.quantity }),
+        body: JSON.stringify({ quantity: quantity }),
       }
     );
     return response;
   } catch (err) {
-    toast.error("Unable to update cart", err);
+    throw new Error("Unable to update cart", err);
   }
 };
 
@@ -195,7 +190,7 @@ export const fetchForUpdateCart = async (id, updatedCartData) => {
 export const fetchForDeleteCart = async (id) => {
   try {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/cart?apiKey=${process.env.NEXT_PUBLIC_API_KEY}&&id=${id}`,
+      `${process.env.NEXT_PUBLIC_API_URL}/cart?id=${id}`,
       {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
@@ -203,6 +198,6 @@ export const fetchForDeleteCart = async (id) => {
     );
     return response;
   } catch (err) {
-    toast.error("Unable to Delete cart", err);
+    throw new Error("Unable to delete cart", err);
   }
 };

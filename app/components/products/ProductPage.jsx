@@ -6,7 +6,7 @@ import ProductCard from "./ProductCard";
 import { fetchFilteredProducts } from "@/app/functions/fetch";
 import CustomPagination from "../pagination/CustomPagination";
 
-const SearchPage = () => {
+const ProductPage = () => {
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [totalProducts, setTotalProducts] = useState();
   const [productsPerPage, setProductsPerPage] = useState();
@@ -67,4 +67,4 @@ const SearchPage = () => {
   );
 };
 
-export default SearchPage;
+export default ProductPage;

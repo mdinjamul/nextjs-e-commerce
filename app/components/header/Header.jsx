@@ -5,14 +5,15 @@ import Image from "next/image";
 import { useSession, signOut } from "next-auth/react";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
-import { fetchCartItems, fetchUserById } from "@/app/functions/fetch";
+import { fetchUserById } from "@/app/functions/fetch";
 import { useEffect, useState } from "react";
+import { useCartContext } from "@/app/hooks/contexts/CartContext";
 
 const Header = () => {
   const router = useRouter();
   const { data: session } = useSession();
   const [userData, setUserData] = useState();
-  const [cartData, setCartData] = useState([]);
+  const { cartData, getCartItems } = useCartContext();
 
   // log out
   const logOut = () => {
@@ -26,24 +27,15 @@ const Header = () => {
   useEffect(() => {
     const fetchUser = async () => {
       if (session?.user?.id) {
-        const userData = await fetchUserById(session.user.id);
+        const userData = await fetchUserById(session?.user?.id);
         setUserData(userData?.[0]);
       }
     };
     if (session) {
       fetchUser();
+      getCartItems();
     }
-
-    const fetchCart = async () => {
-      if (session?.user?.id) {
-        const cartItems = await fetchCartItems(session.user.id);
-        setCartData(cartItems);
-      }
-    };
-    if (session) {
-      fetchCart();
-    }
-  }, [session, cartData, cartData]);
+  }, [session]);
 
   // split the name and take only firstname
   const nameParts = userData?.fullName.split(" ");
@@ -72,7 +64,14 @@ const Header = () => {
             >
               <i className="text-gray-400 w-5 fa fa-shopping-cart"></i>
               <span className="hidden lg:inline ml-1">
-                Cart (<b>{cartData?.length}</b>)
+                Cart (
+                <b>
+                  {cartData?.reduce(
+                    (accumulator, item) => accumulator + item.quantity,
+                    0
+                  )}
+                </b>
+                )
               </span>
             </Link>
             {session?.user ? (

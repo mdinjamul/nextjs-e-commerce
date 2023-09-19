@@ -1,12 +1,14 @@
-// check api key
-export const checkApiKey = (request) => {
-  const apiKey = process.env.NEXT_PUBLIC_API_KEY;
-  const url = new URL(request.url);
-  const usersApiKey = url.searchParams.get("apiKey");
+import { NextResponse } from "next/server";
 
-  if (usersApiKey === apiKey) {
-    return true;
-  } else {
-    return false;
+// api key
+const apiKey = process.env.API_KEY;
+
+// check api key
+export const checkApiKey = (request, next) => {
+  const headerApiKey = request.headers["api-access-key"];
+  if (!headerApiKey || !apiKey || !headerApiKey !== apiKey) {
+    return NextResponse.json({ message: "Unauthorizes", status: 401 });
   }
+
+  next();
 };

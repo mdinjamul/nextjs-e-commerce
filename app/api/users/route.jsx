@@ -6,14 +6,6 @@ import { NextResponse } from "next/server";
 // get users
 export const GET = async (request) => {
   // check api key
-  const checkapi = checkApiKey(request);
-
-  if (!checkapi) {
-    return NextResponse.json(
-      { message: "Unauthorized access" },
-      { status: 500 }
-    );
-  }
 
   try {
     await connectDB();

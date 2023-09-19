@@ -11,14 +11,7 @@ import { NextResponse } from "next/server";
 // get single product by id
 export const GET = async (request, { params }) => {
   // check api key
-  const checkapi = checkApiKey(request);
 
-  if (!checkapi) {
-    return NextResponse.json(
-      { message: "Unauthorized access" },
-      { status: 500 }
-    );
-  }
   try {
     const { id } = params;
     await connectDB();
@@ -35,14 +28,7 @@ export const GET = async (request, { params }) => {
 // update product data
 export const PATCH = async (request, { params }) => {
   // check api key
-  const checkapi = checkApiKey(request);
 
-  if (!checkapi) {
-    return NextResponse.json(
-      { message: "Unauthorized access" },
-      { status: 500 }
-    );
-  }
   try {
     const { id } = params;
     await connectDB();
@@ -71,14 +57,7 @@ export const PATCH = async (request, { params }) => {
 // DELETE PRODUCT
 export const DELETE = async (request, { params }) => {
   // check api key
-  const checkapi = checkApiKey(request);
 
-  if (!checkapi) {
-    return NextResponse.json(
-      { message: "Unauthorized access" },
-      { status: 500 }
-    );
-  }
   try {
     const { id } = params;
     await connectDB();

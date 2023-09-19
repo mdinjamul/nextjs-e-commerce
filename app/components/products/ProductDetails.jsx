@@ -98,14 +98,10 @@ const ProductDetails = (singleProductData) => {
                 >
                   <circle cx="3" cy="3" r="3" fill="#DBDBDB" />
                 </svg>
-
                 <span className="text-green-500">Verified</span>
               </div>
-
               <p className="mb-4 font-semibold text-xl">{price}</p>
-
               <p className="mb-4 text-gray-500">{description}</p>
-
               <div className="flex flex-wrap gap-2 mb-5">
                 {stock >= 1 ? (
                   <div className="border">
@@ -117,7 +113,7 @@ const ProductDetails = (singleProductData) => {
                     >
                       -
                     </button>
-                    <p className="px-4 py-2 inline-block text-black  border hover:bg-gray-200">
+                    <p className="px-4 py-2 inline-block text-black  border">
                       {quantity}
                     </p>
                     <button
@@ -129,12 +125,7 @@ const ProductDetails = (singleProductData) => {
                       +
                     </button>
                   </div>
-                ) : (
-                  <p className="font-normal text-red-600">
-                    Product is not available right now, it will be available
-                    soon!
-                  </p>
-                )}
+                ) : null}
               </div>
 
               <div className="flex flex-wrap gap-2 mb-5">

@@ -7,14 +7,7 @@ import { NextResponse } from "next/server";
 // create product
 export const POST = async (request) => {
   // check api key
-  const checkapi = checkApiKey(request);
 
-  if (!checkapi) {
-    return NextResponse.json(
-      { message: "Unauthorized access" },
-      { status: 500 }
-    );
-  }
   try {
     await connectDB();
     const newProduct = await createProduct(request);
@@ -36,14 +29,6 @@ export const POST = async (request) => {
 // get product
 export const GET = async (request) => {
   // check api key
-  const checkapi = checkApiKey(request);
-
-  if (!checkapi) {
-    return NextResponse.json(
-      { message: "Unauthorized access" },
-      { status: 500 }
-    );
-  }
 
   try {
     await connectDB();

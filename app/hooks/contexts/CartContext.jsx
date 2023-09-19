@@ -6,7 +6,7 @@ import {
   fetchForUpdateCart,
 } from "@/app/functions/fetch";
 import { useRouter } from "next/navigation";
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useState } from "react";
 import { toast } from "react-toastify";
 import { useSession } from "next-auth/react";
 
@@ -16,6 +16,7 @@ const CartProvider = ({ children }) => {
   const router = useRouter();
   const { data: session } = useSession();
   const [cartData, setCartData] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   const userId = session?.user?.id;
 
   ////////////////////////
@@ -31,19 +32,53 @@ const CartProvider = ({ children }) => {
     quantity
   ) => {
     if (session) {
-      const addToCartResponse = await fetchForAddToCart(
-        userId,
-        productId,
-        title,
-        image,
-        price,
-        stock,
-        quantity
+      // check existing product
+      const checkExistingItem = await fetchCartItems(userId);
+      const updateCartItems = await checkExistingItem.find(
+        (item) => item.productId === productId && item.userId === userId
       );
-      if (!addToCartResponse) {
-        toast.error("Unable to add product to Cart");
-      } else {
-        toast.success("Product added to cart");
+      try {
+        // update quantity if product already exist
+        if (updateCartItems) {
+          const newQuantity = updateCartItems.quantity + quantity;
+          const updateQty = await fetchForUpdateCart(
+            updateCartItems.id,
+            newQuantity
+          );
+
+          if (updateQty.ok) {
+            // fetching cart items to show updated cart quantity
+            const countTotalCartItems = await fetchCartItems(userId);
+            setCartData(countTotalCartItems);
+            toast.success("Item Exist, Quantity Updated");
+          } else {
+            toast.error("Unexpected Error");
+          }
+
+          return updateQty;
+        }
+
+        // if product not exist then create new cart item
+        const addToCartResponse = await fetchForAddToCart(
+          userId,
+          productId,
+          title,
+          image,
+          price,
+          stock,
+          quantity
+        );
+
+        if (!addToCartResponse) {
+          toast.error("Unable to add product to Cart");
+        } else {
+          // fetching cart items to show added cart quantity
+          const countTotalCartItems = await fetchCartItems(userId);
+          setCartData(countTotalCartItems);
+          toast.success("Product added to cart");
+        }
+      } catch (error) {
+        toast.error("Unexpected Error 2", error);
       }
     } else {
       toast.warning("you are not logged in, please login first");
@@ -58,19 +93,19 @@ const CartProvider = ({ children }) => {
   /*********************
    * Get cart items
    *********************/
-  useEffect(() => {
+  const getCartItems = async () => {
     if (session && userId) {
-      const handleCartItems = async () => {
-        try {
-          const data = await fetchCartItems(userId);
+      try {
+        const data = await fetchCartItems(userId);
+        if (data) {
           setCartData(data);
-        } catch (error) {
-          console.log("Error fetching cart items", error);
+          setIsLoading(false);
         }
-      };
-      handleCartItems();
+      } catch (error) {
+        console.log("Error fetching cart items", error);
+      }
     }
-  }, [session, userId]);
+  };
 
   /*********************
    * Increase Quantity
@@ -78,7 +113,7 @@ const CartProvider = ({ children }) => {
   const increaseQty = (cartItemId) => {
     const cartQuantityUpdated = cartData.map((item) => {
       if (item.id === cartItemId) {
-        item.quantity++;
+        item.quantity += 1;
         item.isQuantityChanged = true;
       }
       return item;
@@ -93,7 +128,7 @@ const CartProvider = ({ children }) => {
     const cartQuantityUpdated = cartData.map((item) => {
       if (item.id === cartItemId) {
         if (item.quantity > 1) {
-          item.quantity--;
+          item.quantity -= 1;
           item.isQuantityChanged = true;
         }
       }
@@ -105,14 +140,21 @@ const CartProvider = ({ children }) => {
   /***************************
    * Calculate Total Summery
    ***************************/
+  // sub total
   const subTotalPrice = cartData
     ?.reduce((accumulator, item) => accumulator + item.quantity * item.price, 0)
     .toFixed(2);
+
+  // total units
   const totalUnits = cartData?.reduce(
     (accumulator, item) => accumulator + item.quantity,
     0
   );
+
+  // gst amount
   const gst = ((subTotalPrice * 18) / 100).toFixed(2);
+
+  // total
   const totalPrice = (Number(subTotalPrice) + Number(gst)).toFixed(2);
 
   /**********************
@@ -120,11 +162,13 @@ const CartProvider = ({ children }) => {
    ***********************/
   const updateCart = async (cartItemId) => {
     const itemToUpdate = cartData.find((item) => item.id === cartItemId);
+    // console.log(cartData, itemToUpdate);
     if (!itemToUpdate) {
       return null;
     }
     try {
-      const update = await fetchForUpdateCart(cartItemId, itemToUpdate);
+      const newQuantity = itemToUpdate.quantity;
+      const update = await fetchForUpdateCart(cartItemId, newQuantity);
 
       // Disabling the update button after apdate the cart
       if (update.ok) {
@@ -141,7 +185,7 @@ const CartProvider = ({ children }) => {
       toast.success("Cart Updated Successfully");
       return update;
     } catch (error) {
-      toast.error("Unable to update");
+      toast.error("Unable to update cart", error);
     }
   };
 
@@ -172,7 +216,9 @@ const CartProvider = ({ children }) => {
     <CartContext.Provider
       value={{
         addToCart,
+        getCartItems,
         cartData,
+        isLoading,
         increaseQty,
         decreaseQty,
         subTotalPrice,

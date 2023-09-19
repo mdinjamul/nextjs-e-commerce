@@ -15,9 +15,7 @@ const CustomPagination = ({ totalProducts, productsPerPage }) => {
     );
   };
 
-  const totalPage = Math.ceil(totalProducts / productsPerPage);
-
-  console.log(typeof totalPage);
+  const totalPage = Math.ceil(totalProducts / productsPerPage) || 1;
 
   return (
     <>

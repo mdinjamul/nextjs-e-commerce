@@ -10,15 +10,6 @@ import { NextResponse } from "next/server";
 
 // Create cart items
 export const POST = async (request) => {
-  const checkapi = checkApiKey(request);
-
-  if (!checkapi) {
-    return NextResponse.json(
-      { message: "Unauthorized Access" },
-      { status: 500 }
-    );
-  }
-
   try {
     await connectDB();
     const createCartItem = await addToCartItems(request);
@@ -35,13 +26,6 @@ export const POST = async (request) => {
 // get cart items
 export const GET = async (request) => {
   // check api
-  const checkapi = checkApiKey(request);
-  if (!checkapi) {
-    return NextResponse.json(
-      { message: "Unauthorize Access" },
-      { status: 500 }
-    );
-  }
 
   try {
     await connectDB();
@@ -59,14 +43,7 @@ export const GET = async (request) => {
 // update cart data
 export const PATCH = async (request) => {
   // check api key
-  const checkapi = checkApiKey(request);
 
-  if (!checkapi) {
-    return NextResponse.json(
-      { message: "Unauthorized access" },
-      { status: 500 }
-    );
-  }
   try {
     await connectDB();
     const updateCartData = await updateCart(request);
@@ -87,22 +64,13 @@ export const PATCH = async (request) => {
   }
 };
 
-// update cart data
+// delete cart data
 export const DELETE = async (request) => {
   // check api key
-  const checkapi = checkApiKey(request);
 
-  if (!checkapi) {
-    return NextResponse.json(
-      { message: "Unauthorized access" },
-      { status: 500 }
-    );
-  }
   try {
     await connectDB();
     const deleteCartData = await deleteCartItem(request);
-
-    console.log(deleteCartData);
 
     if (!deleteCartData) {
       return NextResponse.json(
