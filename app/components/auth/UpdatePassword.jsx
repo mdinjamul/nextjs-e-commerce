@@ -1,5 +1,5 @@
 import React from "react";
-import Sidebar from "../layout/Sidebar";
+import UserSidebar from "@/app/components/layout/UserSidebar";
 
 const UpdatePassword = () => {
   return (
@@ -7,7 +7,7 @@ const UpdatePassword = () => {
       <section className="py-10">
         <div className="container max-w-screen-xl mx-auto px-4">
           <div className="flex flex-col md:flex-row -mx-4">
-            <Sidebar />
+            <UserSidebar />
             <main className="md:w-2/3 lg:w-3/4 px-4">
               <div
                 style={{ maxWidth: "480px" }}

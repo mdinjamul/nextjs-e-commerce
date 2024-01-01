@@ -108,7 +108,6 @@ export const deleteCartItem = async (request) => {
 
     return cartDelete;
   } catch (error) {
-    console.log(error);
     throw error;
   }
 };

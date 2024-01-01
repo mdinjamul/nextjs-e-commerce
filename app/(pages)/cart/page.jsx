@@ -2,9 +2,9 @@
 import Link from "next/link";
 import { RiDeleteBinLine, RiDeleteBin7Line } from "react-icons/ri";
 import { TiTick } from "react-icons/ti";
-import { useCartContext } from "../hooks/contexts/CartContext";
 import { useEffect } from "react";
 import { useSession } from "next-auth/react";
+import { useCartContext } from "@/app/hooks/contexts/CartContext";
 
 const CartPage = () => {
   // cart context

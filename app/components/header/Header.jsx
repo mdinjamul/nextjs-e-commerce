@@ -1,40 +1,20 @@
 "use client";
-import Search from "./Search";
+import Search from "@/app/components/header/Search";
 import Link from "next/link";
 import Image from "next/image";
-import { useSession, signOut } from "next-auth/react";
-import { toast } from "react-toastify";
-import { useRouter } from "next/navigation";
-import { fetchUserById } from "@/app/functions/fetch";
-import { useEffect, useState } from "react";
+import { useSession } from "next-auth/react";
+import { useEffect } from "react";
 import { useCartContext } from "@/app/hooks/contexts/CartContext";
+import { useUserContextHook } from "@/app/hooks/contexts/UserContext";
 
 const Header = () => {
-  const router = useRouter();
   const { data: session } = useSession();
-  const [userData, setUserData] = useState();
   const { cartData, getCartItems } = useCartContext();
+  const { userData, fetchUser } = useUserContextHook();
 
-  // log out
-  const logOut = () => {
-    toast.warning("You have logged out!!");
-    signOut({ redirect: false }).then(() => {
-      router.push("/login");
-    });
-  };
-
-  // fetch user data if session available
   useEffect(() => {
-    const fetchUser = async () => {
-      if (session?.user?.id) {
-        const userData = await fetchUserById(session?.user?.id);
-        setUserData(userData?.[0]);
-      }
-    };
-    if (session) {
-      fetchUser();
-      getCartItems();
-    }
+    getCartItems();
+    fetchUser();
   }, [session]);
 
   // split the name and take only firstname
@@ -76,14 +56,7 @@ const Header = () => {
             </Link>
             {session?.user ? (
               <>
-                <button
-                  className="px-3 py-2 inline-block text-center text-gray-700 bg-white shadow-sm border border-gray-200 rounded-md hover:bg-gray-100 hover:border-gray-300"
-                  onClick={logOut}
-                >
-                  <i className="text-gray-400 w-5 fa fa-user"></i>
-                  <span className="hidden lg:inline ml-1">Log Out</span>
-                </button>
-                <Link href="/dashboard/profile">
+                <Link href="/user/dashboard">
                   <div className="flex items-center mb-4 space-x-3 mt-4 cursor-pointer">
                     <Image
                       className="w-10 h-10 rounded-full"
@@ -97,7 +70,7 @@ const Header = () => {
                       alt="profile_image"
                     />
                     <div className="space-y-1 font-medium">
-                      <p>Hello{`${" "}${nameParts?.[0]}`}</p>
+                      <p>Hi,{`${" "}${nameParts?.[0]}`}</p>
                     </div>
                   </div>
                 </Link>

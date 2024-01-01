@@ -2,7 +2,7 @@
 import Image from "next/image";
 import React, { useRef, useState } from "react";
 import StarRatings from "react-star-ratings";
-import BreadCrumbs from "../breadcrumbs/BreadCrubms";
+import BreadCrumbs from "@/app/components/breadcrumbs/BreadCrubms";
 import { useSession } from "next-auth/react";
 import { useCartContext } from "@/app/hooks/contexts/CartContext";
 

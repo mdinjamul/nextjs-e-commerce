@@ -1,6 +1,6 @@
+import { handler } from "@/app/api/auth/[...nextauth]/route";
+import Login from "@/app/components/auth/Login";
 import { getServerSession } from "next-auth";
-import Login from "../components/auth/Login";
-import { handler } from "../api/auth/[...nextauth]/route";
 import { redirect } from "next/navigation";
 
 const LoginPage = async () => {

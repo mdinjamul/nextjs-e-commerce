@@ -47,8 +47,8 @@ export const handler = NextAuth({
   ],
   session: {
     strategy: "jwt",
-    maxAge: 7 * 24 * 60 * 60, // Set the session max age 30 days
-    expires: 30 * 24 * 60 * 60, // set the session expiration time
+    maxAge: 7 * 24 * 60 * 60, // Set the session max age 7 days
+    expires: 30 * 24 * 60 * 60, // set the session expiration time 30 days
   },
 
   callbacks: {

@@ -111,6 +111,7 @@ const CartProvider = ({ children }) => {
    * Increase Quantity
    *********************/
   const increaseQty = (cartItemId) => {
+    console.log("I have clicked on +", cartItemId);
     const cartQuantityUpdated = cartData.map((item) => {
       if (item.id === cartItemId) {
         item.quantity += 1;
@@ -125,6 +126,7 @@ const CartProvider = ({ children }) => {
    * Decrease Quantity
    ********************/
   const decreaseQty = (cartItemId) => {
+    console.log("I have clicked on -", cartItemId);
     const cartQuantityUpdated = cartData.map((item) => {
       if (item.id === cartItemId) {
         if (item.quantity > 1) {
@@ -140,21 +142,16 @@ const CartProvider = ({ children }) => {
   /***************************
    * Calculate Total Summery
    ***************************/
-  // sub total
   const subTotalPrice = cartData
     ?.reduce((accumulator, item) => accumulator + item.quantity * item.price, 0)
     .toFixed(2);
 
-  // total units
   const totalUnits = cartData?.reduce(
     (accumulator, item) => accumulator + item.quantity,
     0
   );
 
-  // gst amount
   const gst = ((subTotalPrice * 18) / 100).toFixed(2);
-
-  // total
   const totalPrice = (Number(subTotalPrice) + Number(gst)).toFixed(2);
 
   /**********************
@@ -162,10 +159,10 @@ const CartProvider = ({ children }) => {
    ***********************/
   const updateCart = async (cartItemId) => {
     const itemToUpdate = cartData.find((item) => item.id === cartItemId);
-    // console.log(cartData, itemToUpdate);
     if (!itemToUpdate) {
       return null;
     }
+
     try {
       const newQuantity = itemToUpdate.quantity;
       const update = await fetchForUpdateCart(cartItemId, newQuantity);
@@ -193,17 +190,11 @@ const CartProvider = ({ children }) => {
    * Deleting the cart Item
    *************************/
   const deleteItem = async (cartItemId) => {
-    const itemToDelete = cartData.find((item) => item.id === cartItemId);
-    if (!itemToDelete) {
-      return null;
-    }
     try {
       await fetchForDeleteCart(cartItemId);
 
-      // Create a new array without the deleted item
+      // re render the component
       const updatedCartData = cartData.filter((item) => item.id !== cartItemId);
-
-      // Update the state to reflect the changes
       setCartData(updatedCartData);
 
       toast.success("Item Deleted Successfully");

@@ -113,15 +113,23 @@ export const getUsers = async (request) => {
 /*****************
  * UPDATE USER
  *****************/
-export const updateUser = async (id, updatedData) => {
-  const user = await prisma.user.update({
-    where: {
-      id: id,
-    },
-    data: {
-      ...updatedData,
-    },
-  });
+export const updateUser = async (request) => {
+  const url = new URL(request.url);
+  const userId = url.searchParams.get("userId") || "";
 
-  return user;
+  const updatedData = await request.json();
+
+  try {
+    const user = await prisma.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        ...updatedData,
+      },
+    });
+    return user;
+  } catch (error) {
+    throw error;
+  }
 };

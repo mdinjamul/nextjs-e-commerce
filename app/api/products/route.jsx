@@ -28,8 +28,6 @@ export const POST = async (request) => {
 
 // get product
 export const GET = async (request) => {
-  // check api key
-
   try {
     await connectDB();
     const getProducts = await getAllProducts(request);

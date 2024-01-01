@@ -1,5 +1,3 @@
-import { toast } from "react-toastify";
-
 /**********************
  * FETCH ALL PRODUCTS
  ***********************/
@@ -7,8 +5,10 @@ export const fetchProducts = async () => {
   try {
     const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products`);
     const data = await response.json();
+    console.log(data);
     return data;
   } catch (err) {
+    console.log(err);
     throw new Error("Unable to fetch Products", err);
   }
 };
@@ -44,10 +44,36 @@ export const fetchFilteredProducts = async (
 
 export const fetchSingleProduct = async (id) => {
   const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/products/${id}`
+    `${process.env.NEXT_PUBLIC_API_URL}/products/${id || ""}`
   );
   const data = await response.json();
   return data;
+};
+
+/**********************
+ * CREATE NEW USER
+ ***********************/
+export const fetchForRegister = async (fullName, email, password) => {
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/auth/register`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ fullName, email, password }),
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`Failed to Register User: ${response.status}`);
+    }
+
+    return response;
+  } catch (err) {
+    throw new Error("Unable to Fetch User", err);
+  }
 };
 
 /**********************
@@ -70,7 +96,7 @@ export const fetchUserById = async (id) => {
 export const fetchUserByEmail = async (email) => {
   try {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/users?email=${email}`
+      `${process.env.NEXT_PUBLIC_API_URL}/users?email=${email || ""}`
     );
     const userData = await response.json();
     return userData;
@@ -83,7 +109,7 @@ export const fetchUserByEmail = async (email) => {
 export const fetchUserByPhone = async (phone) => {
   try {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/users?phone=${phone}`
+      `${process.env.NEXT_PUBLIC_API_URL}/users?phone=${phone || ""}`
     );
     const userData = await response.json();
     return userData;
@@ -93,23 +119,22 @@ export const fetchUserByPhone = async (phone) => {
 };
 
 /**********************
- * CREATE NEW USER
+ * UPDATE USER
  ***********************/
-export const fetchForRegister = async (fullName, email, password) => {
+
+export const fetchForUpdateUser = async (userId, fullName, email, avatar) => {
   try {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/auth/register`,
+      `${process.env.NEXT_PUBLIC_API_URL}/users?userId=${userId || ""}`,
       {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ fullName, email, password }),
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ fullName, email, avatar }),
       }
     );
     return response;
-  } catch (err) {
-    throw new Error("Unable to Fetch User", err);
+  } catch (error) {
+    throw new Error("Unable to Update User", error);
   }
 };
 
@@ -151,7 +176,7 @@ export const fetchForAddToCart = async (
 export const fetchCartItems = async (userId) => {
   try {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/cart?userId=${userId}`
+      `${process.env.NEXT_PUBLIC_API_URL}/cart?userId=${userId || ""}`
     );
 
     if (!response.ok) {
@@ -171,7 +196,7 @@ export const fetchCartItems = async (userId) => {
 export const fetchForUpdateCart = async (id, quantity) => {
   try {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/cart?id=${id}`,
+      `${process.env.NEXT_PUBLIC_API_URL}/cart?id=${id || ""}`,
       {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
@@ -190,7 +215,7 @@ export const fetchForUpdateCart = async (id, quantity) => {
 export const fetchForDeleteCart = async (id) => {
   try {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/cart?id=${id}`,
+      `${process.env.NEXT_PUBLIC_API_URL}/cart?id=${id || ""}`,
       {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
@@ -199,5 +224,120 @@ export const fetchForDeleteCart = async (id) => {
     return response;
   } catch (err) {
     throw new Error("Unable to delete cart", err);
+  }
+};
+
+/**********************
+ * CREATE NEW ADDRESS
+ ***********************/
+export const fetchForCreateAddress = async (
+  userId,
+  street,
+  city,
+  state,
+  phone,
+  zipCode,
+  country
+) => {
+  try {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/address`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        userId,
+        street,
+        city,
+        state,
+        phone,
+        zipCode,
+        country,
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to add address: ${response.status}`);
+    }
+
+    return response;
+  } catch (error) {
+    throw new Error("Unable to create address", error);
+  }
+};
+
+/**********************
+ * GET USER ADDRESS
+ ***********************/
+export const fetchForGetAddress = async (userId) => {
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/address?userId=${userId || ""}`
+    );
+    if (!response.ok) {
+      throw new Error(`Failed to Fetch address: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    throw new Error("Unable to get address", error);
+  }
+};
+
+/**********************
+ * UPDATE A SINGLE ADDRESS
+ ***********************/
+export const fetchForUpdateAddress = async (
+  addressId,
+  userId,
+  street,
+  city,
+  state,
+  phone,
+  zipCode,
+  country
+) => {
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/address?id=${addressId || ""}`,
+      {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userId,
+          street,
+          city,
+          state,
+          phone,
+          zipCode,
+          country,
+        }),
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`Failed to add address: ${response.status}`);
+    }
+
+    return response;
+  } catch (error) {
+    throw new Error("Unable to create address", error);
+  }
+};
+
+/**********************
+ * DELETE ADDRESS
+ ***********************/
+export const fetchForDeleteAddress = async (id) => {
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/address?id=${id || ""}`,
+      {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+      }
+    );
+    return response;
+  } catch (error) {
+    throw new Error("Unable to delete address");
   }
 };

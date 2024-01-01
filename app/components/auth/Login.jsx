@@ -25,7 +25,7 @@ const Login = () => {
         toast.error("Incorrect Login Details!!");
       } else {
         toast.success("Login Successful!!");
-        router.push("/dashboard/profile");
+        router.push("/user/dashboard");
       }
     } catch (error) {
       toast.success(error);

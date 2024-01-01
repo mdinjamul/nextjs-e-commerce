@@ -4,15 +4,21 @@ import { countries } from "countries-list";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
 
-const NewAddress = () => {
-  const countriesList = Object.values(countries);
-  const [street, setStreet] = useState("");
-  const [city, setCity] = useState("");
-  const [state, setState] = useState("");
-  const [zipcode, setZipcode] = useState("");
-  const [phoneNo, setPhoneNo] = useState("");
-  const [country, setCountry] = useState("");
-  const { handleCreateAddressSubmit } = useUserContextHook();
+const UpdateAddress = () => {
+  const countriesList = Object?.values(countries);
+  const { allAddress, addressId, handleUpdateAddressSubmit } =
+    useUserContextHook();
+
+  // find current clicked address
+  const currentAddress = allAddress?.find((item) => item?.id === addressId);
+
+  // Get fields value
+  const [street, setStreet] = useState(currentAddress?.street || "");
+  const [city, setCity] = useState(currentAddress?.city || "");
+  const [state, setState] = useState(currentAddress?.state || "");
+  const [zipcode, setZipcode] = useState(currentAddress?.zipCode || "");
+  const [phoneNo, setPhoneNo] = useState(currentAddress?.phone || "");
+  const [country, setCountry] = useState(currentAddress?.country || "");
 
   // get userid from session
   const { data: session } = useSession();
@@ -26,8 +32,9 @@ const NewAddress = () => {
       >
         <form
           onSubmit={(e) =>
-            handleCreateAddressSubmit(
+            handleUpdateAddressSubmit(
               e,
+              addressId,
               userId,
               street,
               city,
@@ -46,6 +53,7 @@ const NewAddress = () => {
               className="appearance-none border border-gray-200 bg-gray-100 rounded-md py-2 px-3 hover:border-gray-400 focus:outline-none focus:border-gray-400 w-full"
               type="text"
               placeholder="Type your street"
+              value={street}
               onChange={(e) => setStreet(e.target.value)}
               required
             />
@@ -58,6 +66,7 @@ const NewAddress = () => {
                 className="appearance-none border border-gray-200 bg-gray-100 rounded-md py-2 px-3 hover:border-gray-400 focus:outline-none focus:border-gray-400 w-full"
                 type="text"
                 placeholder="Type your city"
+                value={city}
                 onChange={(e) => setCity(e.target.value)}
                 required
               />
@@ -69,6 +78,7 @@ const NewAddress = () => {
                 className="appearance-none border border-gray-200 bg-gray-100 rounded-md py-2 px-3 hover:border-gray-400 focus:outline-none focus:border-gray-400 w-full"
                 type="text"
                 placeholder="Type state here"
+                value={state}
                 onChange={(e) => setState(e.target.value)}
                 required
               />
@@ -82,6 +92,7 @@ const NewAddress = () => {
                 className="appearance-none border border-gray-200 bg-gray-100 rounded-md py-2 px-3 hover:border-gray-400 focus:outline-none focus:border-gray-400 w-full"
                 type="number"
                 placeholder="Type zip code here"
+                value={zipcode}
                 onChange={(e) => setZipcode(e.target.value)}
                 required
               />
@@ -93,6 +104,7 @@ const NewAddress = () => {
                 className="appearance-none border border-gray-200 bg-gray-100 rounded-md py-2 px-3 hover:border-gray-400 focus:outline-none focus:border-gray-400 w-full"
                 type="number"
                 placeholder="Type phone no here"
+                value={phoneNo}
                 onChange={(e) => setPhoneNo(e.target.value)}
                 required
               />
@@ -103,6 +115,7 @@ const NewAddress = () => {
             <label className="block mb-1"> Country </label>
             <select
               className="appearance-none border border-gray-200 bg-gray-100 rounded-md py-2 px-3 hover:border-gray-400 focus:outline-none focus:border-gray-400 w-full"
+              value={country}
               onChange={(e) => setCountry(e.target.value)}
               required
             >
@@ -118,7 +131,7 @@ const NewAddress = () => {
             type="submit"
             className="my-2 px-4 py-2 text-center w-full inline-block text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700"
           >
-            Add Address
+            Update Address
           </button>
         </form>
       </div>
@@ -126,4 +139,4 @@ const NewAddress = () => {
   );
 };
 
-export default NewAddress;
+export default UpdateAddress;

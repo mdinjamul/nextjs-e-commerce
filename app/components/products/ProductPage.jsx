@@ -1,10 +1,10 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import Filters from "./Filters";
-import ProductCard from "./ProductCard";
+import Filters from "@/app/components/products/Filters";
+import ProductCard from "@/app/components/products/ProductCard";
 import { fetchFilteredProducts } from "@/app/functions/fetch";
-import CustomPagination from "../pagination/CustomPagination";
+import CustomPagination from "@/app/components/pagination/CustomPagination";
 
 const ProductPage = () => {
   const [filteredProducts, setFilteredProducts] = useState([]);

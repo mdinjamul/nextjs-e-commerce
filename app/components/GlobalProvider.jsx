@@ -1,8 +1,9 @@
 "use client";
 import { SessionProvider } from "next-auth/react";
 import { ToastContainer } from "react-toastify";
-import { AuthProvider } from "../hooks/contexts/AuthContext";
-import { CartProvider } from "../hooks/contexts/CartContext";
+import { AuthProvider } from "@/app/hooks/contexts/AuthContext";
+import { CartProvider } from "@/app/hooks/contexts/CartContext";
+import { UserProvider } from "@/app/hooks/contexts/UserContext";
 
 export default function GlobalProvider({ children }) {
   return (
@@ -20,7 +21,9 @@ export default function GlobalProvider({ children }) {
         theme="light"
       />
       <AuthProvider>
-        <CartProvider>{children}</CartProvider>
+        <UserProvider>
+          <CartProvider>{children}</CartProvider>
+        </UserProvider>
       </AuthProvider>
     </SessionProvider>
   );

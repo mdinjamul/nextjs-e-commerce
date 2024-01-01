@@ -1,5 +1,5 @@
 import { checkApiKey } from "@/backend/controllers/helper";
-import { getUsers } from "@/backend/controllers/users";
+import { getUsers, updateUser } from "@/backend/controllers/users";
 import { connectDB } from "@/backend/utils/dbConnect";
 import { NextResponse } from "next/server";
 
@@ -14,6 +14,20 @@ export const GET = async (request) => {
   } catch (error) {
     return NextResponse.json(
       { message: "Unable to Get Users", error },
+      { status: 500 }
+    );
+  }
+};
+
+// update user
+export const PATCH = async (request) => {
+  try {
+    await connectDB();
+    const updatedUser = await updateUser(request);
+    return NextResponse.json(updatedUser);
+  } catch (error) {
+    return NextResponse.json(
+      { message: "Unable to Update Users", error },
       { status: 500 }
     );
   }
