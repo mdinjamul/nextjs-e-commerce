@@ -1,4 +1,4 @@
-import prisma from "@/backend/prisma/prismaClient";
+import prisma from "@/prisma/prismaClient";
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";

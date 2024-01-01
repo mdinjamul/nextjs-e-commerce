@@ -1,4 +1,4 @@
-import prisma from "@/backend/prisma/prismaClient";
+import prisma from "@/prisma/prismaClient";
 import bcrypt from "bcryptjs";
 
 export const addNewUser = async (request) => {

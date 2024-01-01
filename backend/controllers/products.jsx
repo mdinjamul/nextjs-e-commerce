@@ -1,4 +1,4 @@
-import prisma from "@/backend/prisma/prismaClient";
+import prisma from "@/prisma/prismaClient";
 
 /***************************
  * CREATE PRODUCT FUNCTION
