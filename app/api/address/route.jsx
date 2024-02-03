@@ -31,7 +31,6 @@ export const POST = async (request) => {
 /**
  * GET ADDRESS
  */
-
 export const GET = async (request) => {
   try {
     await connectDB();
@@ -49,7 +48,6 @@ export const GET = async (request) => {
 /**
  * UPDATE ADDRESS
  */
-
 export const PATCH = async (request) => {
   try {
     await connectDB();
