@@ -21,14 +21,14 @@ const Login = () => {
         password,
       });
 
-      if (isLoggedin.error !== null) {
+      if (!isLoggedin.ok) {
         toast.error("Incorrect Login Details!!");
       } else {
         toast.success("Login Successful!!");
         router.push("/user/dashboard");
       }
     } catch (error) {
-      toast.success(error);
+      toast.error(error);
     }
   };
 

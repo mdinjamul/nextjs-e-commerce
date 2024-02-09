@@ -3,7 +3,6 @@ import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
 import { connectDB } from "@/backend/utils/dbConnect";
-import { toast } from "react-toastify";
 // import NextAuth from "next-auth/next";
 
 export const handler = NextAuth({
@@ -17,34 +16,34 @@ export const handler = NextAuth({
 
         try {
           await connectDB();
-          const user = await prisma.user.findFirst({
+          const user = await prisma.user.findUnique({
             where: {
               email: email,
             },
           });
-
-          if (!user) {
-            toast.error("Invalid Credentials");
-            return { error: "Invalid Credentials" };
-          }
 
           const passwordMatching = await bcrypt.compare(
             password,
             user.password
           );
 
-          if (!passwordMatching) {
-            toast.error("Invalid Credentials");
-            return { error: "Invalid Credentials" };
+          if (user !== null && passwordMatching == true) {
+            return user;
+          } else {
+            return null;
           }
-
-          return user;
         } catch (error) {
-          console.log("error", error);
+          return {
+            apiMessage: {
+              errorMsg: "Unexpected Error occurred ",
+              error: error,
+            },
+          };
         }
       },
     }),
   ],
+
   session: {
     strategy: "jwt",
     maxAge: 7 * 24 * 60 * 60, // Set the session max age 7 days
