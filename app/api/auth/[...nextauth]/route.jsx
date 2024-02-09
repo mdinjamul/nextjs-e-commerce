@@ -1,9 +1,8 @@
-import prisma from "@/prisma/prismaClient";
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
 import { connectDB } from "@/backend/utils/dbConnect";
-// import NextAuth from "next-auth/next";
+import prisma from "@/prisma/prismaClient";
 
 export const handler = NextAuth({
   providers: [
@@ -48,6 +47,7 @@ export const handler = NextAuth({
     }),
   ],
 
+  //   session
   session: {
     strategy: "jwt",
     maxAge: 7 * 24 * 60 * 60, // Set the session max age 7 days
@@ -63,6 +63,8 @@ export const handler = NextAuth({
     async session({ session, token }) {
       session.user.id = token.user.id;
       delete session?.user?.email;
+      delete session?.user?.phone;
+      delete session?.user?.password;
       return session;
     },
   },

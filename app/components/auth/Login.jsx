@@ -15,20 +15,20 @@ const Login = () => {
     e.preventDefault();
 
     try {
-      const isLoggedin = await signIn("credentials", {
+      const isLoggedIn = await signIn("credentials", {
         redirect: false,
-        email,
-        password,
+        email: email,
+        password: password,
       });
 
-      if (!isLoggedin.ok) {
-        toast.error("Incorrect Login Details!!");
-      } else {
+      if (isLoggedIn.ok) {
         toast.success("Login Successful!!");
         router.push("/user/dashboard");
+      } else {
+        toast.error("Incorrect Login Details");
       }
     } catch (error) {
-      toast.error(error);
+      toast.error("Unexpected Error Occurred");
     }
   };
 
