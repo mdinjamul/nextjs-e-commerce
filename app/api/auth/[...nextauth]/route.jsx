@@ -22,13 +22,17 @@ export const handler = NextAuth({
             },
           });
 
-          const passwordMatching = await bcrypt.compare(
-            password,
-            user.password
-          );
+          if (user !== null) {
+            const passwordMatching = await bcrypt.compare(
+              password,
+              user.password
+            );
 
-          if (user !== null && passwordMatching == true) {
-            return user;
+            if (passwordMatching !== false) {
+              return user;
+            } else {
+              return null;
+            }
           } else {
             return null;
           }
@@ -58,17 +62,9 @@ export const handler = NextAuth({
 
     async session({ session, token }) {
       session.user.id = token.user.id;
-
       delete session?.user?.email;
-
       return session;
     },
-
-    // async redirect({ url, baseUrl }) {
-    //   return url.startsWith(baseUrl + "/login")
-    //     ? Promise.resolve("/dashboard/profile")
-    //     : Promise.resolve("/login");
-    // },
   },
 
   pages: {
