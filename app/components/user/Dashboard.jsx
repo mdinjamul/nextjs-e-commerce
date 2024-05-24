@@ -15,7 +15,7 @@ const UserDashboard = () => {
             </div>
             <div>
               <h2 className="text-lg font-semibold">Your Addresses</h2>
-              <p className="text-sm">Manage Your address</p>
+              <p className="text-sm">Manage Your addressed</p>
             </div>
           </div>
         </Link>
