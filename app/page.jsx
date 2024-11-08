@@ -1,4 +1,4 @@
-import HomeHero from "@/app/components/hero/homeHero";
+import HomeHero from "@/app/components/hero/HomeHero";
 
 const Home = async () => {
   return (
